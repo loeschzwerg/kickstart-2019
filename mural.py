@@ -3,21 +3,38 @@ We can prove to always get the maximum sum of ceil(N/2) tiles
 sum_tiles: the maximum beauty tiles sequence. (uniquely indexable in tiles)
 Let start = tiles.index[sum_tiles[0]]
 Now, when starting at start + start // 2, we can simply paint every tile by countering the floods movement.
+
+Large input:
+Time limit exceeded for 5 x 10^6 input.
+Strategies to reduce processing power:
+Reduce the most frequent sum calculations by reusing them.
+1.:
+Build a binary tree structure, that memoizes calculations indexwise
 """
+
 from math import ceil
+
 def output(case: int, b: int):
     print("Case #%i: %i" % (case, b))
 
+def memoize(f):
+    memo = {}
+    def helper(x,y):
+        if (x,y) not in memo:
+            memo[(x,y)] = f(x,y)
+        return memo[(x,y)]
+    return helper
 
-# time limit exceeded for 5 x 10^6 input
 
-def find_max_sum(half: int, tiles: str):
-    sums = []
-    for tile in range(half+1):
-        subtiles = tiles[tile:tile+half]
-        _sum = sum(subtiles)
-        sums.append(_sum)
-    return max(sums)
+def find_max_sum(half: int, tiles: list):
+    @memoize
+    def subsum(left, right):
+        if right > left+1:
+            n_half = left + (right-left) // 2
+            return subsum(left,n_half) + subsum(n_half,right)
+        else:
+            return tiles[left]
+    return max([subsum(x, x+half) for x in range(half)])
 
 if __name__ == "__main__":
     testcases = int(input())
