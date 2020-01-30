@@ -45,6 +45,6 @@ if __name__ == "__main__":
     for tc in range(testcases):
         cases += [[ceil(int(input())/2), [int(x) for x in input()]]]
 
-    for case in range(len(cases)):
-        b = find_max_sum(*cases[case])
-        output(case+1, b)
+    for i, case in enumerate(cases):
+        b = find_max_sum(*case)
+        output(i+1, b)
