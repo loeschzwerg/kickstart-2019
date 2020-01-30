@@ -9,7 +9,9 @@ Time limit exceeded for 5 x 10^6 input.
 Strategies to reduce processing power:
 Reduce the most frequent sum calculations by reusing them.
 1.:
-Build a binary tree like cache, that memoizes calculations indexwise
+Build a binary tree like cache, that memoizes calculations indexwise -X-> Memory Limit Exceeded
+2.:
+Walk sums from left to right. Begin with [left, n]. Continue with - [left] + [left, n] + [n+1].
 """
 
 from math import ceil
@@ -19,33 +21,21 @@ def output(case: int, b: int):
     print("Case #%i: %i" % (case, b))
 
 
-def memoize(f):
-    memo = {}
+def paint_length(_list):
+    return ceil(len(_list)/2)
 
-    def helper(x, y):
-        if (x, y) not in memo:
-            if x % 2 == 0:
-                if y % 2 == 0: create cached
-                    memo[(x, y)] = f(x, y)
-                    return memo[(x,y)]
-                elif (x+1, y) not in memo
-            elif y % 2 == 0:
-                
-            else:    # (x,y-1) is in cache
-                return memo[(x,y-1)] + f(y-1, y)
-        return memo[(x, y)]
-    return helper
+
+def subsums(_list, paint_length):
+    _sum = sum(_list[:paint_length])
+    _sums = [_sum]
+    for i, x in enumerate(_list[paint_length:]):
+        _sum = _sum - _list[i] + x
+        _sums += [_sum]
+    return _sums
 
 
 def find_max_sum(half: int, tiles: list):
-    @memoize
-    def subsum(left, right):
-        if right - left > 1:
-            n_half = left + (right-left) // 2
-            return subsum(left, n_half) + subsum(n_half, right)
-        else:
-            return tiles[left]
-    return max([subsum(tile, tile+half) for tile in range(half+(1 if len(tiles) % 2 == 0 else 0))])
+    return max(subsums(tiles, half))
 
 
 if __name__ == "__main__":
